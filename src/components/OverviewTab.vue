@@ -1,41 +1,43 @@
 <script setup lang="ts">
-import Splitter from 'primevue/splitter';
-import SplitterPanel from 'primevue/splitterpanel';
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
-import InputSwitch from 'primevue/inputswitch';
 import { AIProject } from "aia-kit/ai_project.js";
 import { parseAiBoolean, parseAiColor } from "aia-kit/utils/utils.js";
-
+import ColorView from './ColorView.vue';
+import * as R from "remeda";
 import { getPackageName } from "../utils";
+import { computed } from "vue";
+import { Doughnut } from "vue-chartjs";
 
-
-let props = defineProps<{ project: AIProject }>();
+const props = defineProps<{ project: AIProject }>();
 
 const project = props.project;
 
 const COLORS = ['#3366cc', '#dc3912', '#ff9900', '#109618', '#5e35b1'];
 
-const totalBlocks = project.screens.reduce((a, s) => a + (s.blocks?.match(/<\/block>/g) || []).length, 0)
-const blocksPerScreen = project.screens.map(s => ({
-  name: s.name,
-  value: (s.blocks?.match(/<\/block>/g) || []).length / totalBlocks
-}))
+const data = computed(() => {
+  const totalBlocks = R.sum(project.screens.map((s) => (s.blocks?.match(/<\/block>/g) ?? []).length))
+  const blocksPerScreen = project.screens.map(s => ({
+    name: s.name,
+    value: (s.blocks?.match(/<\/block>/g) ?? []).length
+  }))
 
-const totalAssets = project.assets.length
-const assetsPerType = Object.entries(project.assets.reduce((a: Record<string, number>, s) => {
-  if (a[s.type]) {
-    a[s.type]++
-  } else {
-    a[s.type] = 1
+  const avgBlocksPerScreen = R.sum(blocksPerScreen.map(R.prop('value'))) / blocksPerScreen.length
+
+  const totalAssets = project.assets.length
+  const assetsPerType = R.groupBy(project.assets, R.prop('type'))
+
+  const totalExtensions = project.extensions.length
+
+  return {
+    totalBlocks,
+    blocksPerScreen,
+    avgBlocksPerScreen,
+    totalAssets,
+    assetsPerType,
+    totalExtensions,
   }
-  return a
-}, {})).map(([k, v]) => ({
-  name: k,
-  value: v / totalAssets
-}))
+})
 
-function parseProperty(value: string): { type: 'text' | 'color' | 'number' | 'boolean', value: string | number | boolean } {
+function parseProperty(value: string) {
   if (['True', 'False'].includes(value)) {
     return { type: 'boolean', value: parseAiBoolean(value) }
   }
@@ -48,82 +50,83 @@ function parseProperty(value: string): { type: 'text' | 'color' | 'number' | 'bo
   return { type: 'text', value }
 }
 
-let projectProperties = Object.entries(project.properties).map(([k, v]) => ({
+const projectProperties = Object.entries(project.properties).map(([k, v]) => ({
   name: k,
   ...parseProperty(v)
 }))
+
+const chartOptions = {
+  plugins: {
+    legend: {
+      position: 'right',
+      labels: {
+        usePointStyle: true
+      }
+    },
+  }
+}
 </script>
 
 <template>
-  <Splitter>
-    <SplitterPanel :size="15" :minSize="15">
-      <img src="/logo.png" style="height:64px" />
-      <p>Package name = {{ getPackageName(project) }}</p>
-    </SplitterPanel>
-    <SplitterPanel :size="40">
-      <div class="flex col gap-2 p-4">
-        <div v-for="property in projectProperties">
-          <div v-if="property.type === 'boolean'" class="flex row apart align-center">
-            <label :for="property.name">{{ property.name }}</label>
-            <InputSwitch :inputId="property.name" v-model="property.value" readOnly />
-          </div>
-          <div v-else-if="property.type === 'number'" class="flex col">
-            <label :for="property.name">{{ property.name }}</label>
-            <InputNumber :inputId="property.name" v-model="property.value" readOnly />
-          </div>
-          <div v-else-if="property.type === 'color'" class="flex row apart align-center">
-            <label :for="property.name">{{ property.name }}</label>
-            <div class="flex row align-center gap-2">
-              <div class="colorview" :style="{ backgroundColor: property.value }"></div>
-              <span>{{ property.value }}</span>
-            </div>
-          </div>
-          <div v-else-if="property.type === 'text'" class="flex col">
-            <label :for="property.name">{{ property.name }}</label>
-            <InputText :inputId="property.name" v-model="property.value" readOnly />
-          </div>
-        </div>
+  <div class="flex">
+
+    <div class="flex flex-col gap-4 p-4">
+      <div>
+        <img src="/logo.png" style="height: 64px" />
+        <p>Package name = {{ getPackageName(project) }}</p>
       </div>
-    </SplitterPanel>
-    <SplitterPanel :size="45">
-      some charts here
-    </SplitterPanel>
-  </Splitter>
+
+      <template v-for="property in projectProperties">
+        <div v-if="property.type === 'boolean'" class="flex justify-between items-center">
+          <label :for="property.name">{{ property.name }}</label>
+          <el-switch :inputId="property.name" v-model="property.value" readOnly />
+        </div>
+        <div v-else-if="property.type === 'number'" class="flex flex-col">
+          <label :for="property.name">{{ property.name }}</label>
+          <el-input :inputId="property.name" v-model="property.value" readOnly />
+        </div>
+        <div v-else-if="property.type === 'color'" class="flex flex-col">
+          <label :for="property.name">{{ property.name }}</label>
+          <ColorView :color="property.value" />
+        </div>
+        <div v-else-if="property.type === 'text'" class="flex flex-col">
+          <label :for="property.name">{{ property.name }}</label>
+          <el-input id="property.name" v-model="property.value" readOnly />
+        </div>
+      </template>
+    </div>
+
+    <div class="flex-1 flex flex-col items-center gap-4 p-4">
+      <div class="flex justify-around w-full">
+        <el-statistic title="Total blocks" :value="data.totalBlocks" />
+        <el-statistic title="Avg blocks per screen" :value="data.avgBlocksPerScreen" />
+        <el-statistic title="Total assets" :value="data.totalAssets" />
+        <el-statistic title="Total size of assets" :value="data.totalAssets" />
+        <el-statistic title="Total extensions" :value="data.totalExtensions" />
+      </div>
+
+      <section>
+        <p>% of blocks by screen</p>
+        <Doughnut :options="chartOptions" :data="{
+          labels: data.blocksPerScreen.map(R.prop('name')),
+          datasets: [{
+            data: data.blocksPerScreen.map(d => 100 * d.value / data.totalBlocks),
+            backgroundColor: COLORS,
+          }]
+        }" />
+      </section>
+
+      <section>
+        <p>% of assets by type</p>
+        <Doughnut :options="chartOptions" :data="{
+          labels: Object.keys(data.assetsPerType),
+          datasets: [{
+            data: Object.values(data.assetsPerType).map(d => 100 * d.length / data.totalAssets),
+            backgroundColor: COLORS,
+          }]
+        }" />
+      </section>
+
+    </div>
+  </div>
 </template>
-
-<style>
-.flex {
-  display: flex;
-}
-
-.row {
-  flex-direction: row;
-}
-
-.col {
-  flex-direction: column;
-}
-
-.gap-2 {
-  gap: 1rem;
-}
-
-.apart {
-  justify-content: space-between;
-}
-
-.align-center {
-  align-items: center;
-}
-
-.p-4 {
-  padding: 1rem;
-}
-
-.colorview {
-  height: 2rem;
-  width: 2rem;
-  border-radius: 50%;
-  outline: 2px solid gray;
-}
-</style>

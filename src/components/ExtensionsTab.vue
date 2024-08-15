@@ -1,21 +1,15 @@
 <script setup lang="ts">
 import { AIExtension } from "aia-kit/ai_extension.js";
 
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-
-let props = defineProps<{ exts: AIExtension[] }>();
-
-const exts = props.exts;
-
+defineProps<{ exts: AIExtension[] }>();
 </script>
 
 <template>
-  <DataTable :value="exts" scrollable scrollHeight="flex" tableStyle="min-width: 50rem">
-    <Column field="name" header="Type"></Column>
-    <Column field="descriptorJSON.name" header="Name"></Column>
-    <Column field="descriptorJSON.version" header="Version"></Column>
-    <Column field="descriptorJSON.helpString" header="Description"></Column>
-    <Column field="descriptorJSON.iconName" header="Icon"></Column>
-  </DataTable>
+  <el-table :data="$props.exts" scrollable scrollHeight="flex" tableStyle="min-width: 50rem">
+    <el-table-column prop="name" label="Type" sortable />
+    <el-table-column prop="descriptorJSON.name" label="Name" sortable />
+    <el-table-column prop="descriptorJSON.version" label="Version" sortable />
+    <el-table-column prop="descriptorJSON.helpString" label="Description" />
+    <el-table-column prop="descriptorJSON.iconName" label="Icon" />
+  </el-table>
 </template>

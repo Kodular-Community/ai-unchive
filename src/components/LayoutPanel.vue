@@ -1,20 +1,25 @@
 <script setup lang="ts">
 import { AIComponent } from "aia-kit/ai_component.js";
-import SelectButton from "primevue/selectbutton";
-import Tree, { TreeNode } from "primevue/tree";
-import { computed, ref } from "vue";
+import { ElTree } from "element-plus";
+import { FilterNodeMethodFunction } from "element-plus/es/components/tree/src/tree.type.mjs";
+import { computed, ref, watch } from "vue";
 
-let props = defineProps<{ form: AIComponent }>();
+const props = defineProps<{ form: AIComponent }>();
 
-const form = props.form;
-
-let emit = defineEmits<{
-  (e: 'componentSelected', component: AIComponent): void
+const emit = defineEmits<{
+  componentSelected: [component: AIComponent]
 }>()
 
-let visibility = ref("All");
+const visibility = ref("All");
 
-function componentToTreeNode(component: AIComponent): any {
+type Tree = {
+  key: string;
+  label: string;
+  children: Tree[];
+  componentRef: AIComponent;
+}
+
+function componentToTreeNode(component: AIComponent): Tree | null {
   if (component.type !== 'Form') {
     if (visibility.value === 'Visible' && !component.visible) {
       return null
@@ -27,34 +32,39 @@ function componentToTreeNode(component: AIComponent): any {
   return {
     key: component.name,
     label: component.name,
-    children: component.children.map(componentToTreeNode).filter(Boolean),
+    children: component.children.map(componentToTreeNode).filter(n => !!n),
     componentRef: component,
   };
 }
 
-let nodes = computed(() => {
-  return [
-    componentToTreeNode(form),
-  ];
-});
+const nodes = computed(() => [componentToTreeNode(props.form)]);
 
-let topLevelComponents = computed(() => {
-  let m = new Map<string, boolean>();
-  for (let component of form.children) {
-    m.set(component.name, true);
-  }
-  return m;
-});
-
-
-function onNodeSelect(node: TreeNode) {
+function onNodeSelect(node: Tree) {
   emit('componentSelected', node.componentRef);
 }
 
+const filterText = ref('')
+const treeRef = ref<InstanceType<typeof ElTree>>()
+
+watch(filterText, (val) => {
+  treeRef.value!.filter(val)
+})
+
+const filterNode: FilterNodeMethodFunction = (value, data) => {
+  if (!value) return true
+  return data.label.toLowerCase().includes(value.toLowerCase())
+}
 </script>
 
 <template>
-  <SelectButton v-model="visibility" :options="['All', 'Visible', 'Non-Visible']" />
-  <Tree :value="nodes" :expandedKeys="topLevelComponents" selectionMode="single" @nodeSelect="onNodeSelect" />
-  <pre>{{ topLevelComponents }}</pre>
+  <div class="flex flex-col gap-2 p-4 w-80">
+    <el-radio-group v-model="visibility" class="self-stretch">
+      <el-radio-button label="All" value="All" />
+      <el-radio-button label="Visible" value="Visible" />
+      <el-radio-button label="Non-Visible" value="Non-Visible" />
+    </el-radio-group>
+    <el-input v-model="filterText" placeholder="Filter keyword" />
+    <el-tree ref="treeRef" :data="nodes" node-key="key" :default-expanded-keys="[$props.form.name]"
+      :filter-node-method="filterNode" @node-click="onNodeSelect" />
+  </div>
 </template>

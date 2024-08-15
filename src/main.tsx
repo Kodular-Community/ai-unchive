@@ -1,19 +1,18 @@
 import { createApp } from 'vue'
-import PrimeVue from 'primevue/config';
-
+import ElementPlus from 'element-plus'
 import App from './App.vue'
+import '@fontsource-variable/inter';
+import 'element-plus/dist/index.css'
+import './main.css'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 
-import 'primevue/resources/themes/mdc-dark-deeppurple/theme.css';
+ChartJS.register(ArcElement, Tooltip, Legend)
 
 declare global {
   const Blockly: any
   const BlocklyWorkspace: any
 }
 
-// import { Colors, Chart } from 'chart.js';
-
-// Chart.register(Colors);
-
-let v = createApp(App)
-v.use(PrimeVue)
+const v = createApp(App)
+v.use(ElementPlus)
 v.mount('#app')
