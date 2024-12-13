@@ -1,11 +1,11 @@
-import {AIScreen} from "aia-kit/dist/ai_screen";
-import React, {useState} from "react";
+import {Screen} from "aia-kit";
+import {useState} from "react";
 import {Container, Grid} from "@mantine/core";
-import {LayoutPanel} from "./LayoutPanel";
-import {PropertiesPanel} from "./PropertiesPanel";
-import {BlocksPanel} from "./BlocksPanel";
+import {LayoutPanel} from "./LayoutPanel.js";
+import {PropertiesPanel} from "./PropertiesPanel.js";
+import {BlocksPanel} from "./BlocksPanel.js";
 
-export function ScreenTab({screen}: { screen: AIScreen }) {
+export function ScreenTab({screen}: { screen: Screen }) {
     const [selected, setSelected] = useState(screen.form)
     return (
         <Container fluid>

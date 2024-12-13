@@ -1,5 +1,4 @@
-import React from "react";
-import {AIProject} from "aia-kit/dist/ai_project";
+import {Project} from "aia-kit";
 import {
   Avatar,
   Badge,
@@ -15,8 +14,8 @@ import {
   Text,
   TextInput
 } from "@mantine/core";
-import {getPackageName} from "../utils";
-import {parseAiBoolean, parseAiColor} from "aia-kit/dist/utils/utils";
+import {getPackageName} from "../utils.js";
+import {parseAiBoolean, parseAiColor} from "aia-kit/utils/utils.js";
 
 const COLORS = ['#3366cc', '#dc3912', '#ff9900', '#109618', '#5e35b1'];
 
@@ -86,7 +85,7 @@ function ProjectPropertiesPanel({properties}: { properties: Record<string, strin
   );
 }
 
-export function OverviewTab({project}: { project: AIProject }) {
+export function OverviewTab({project}: { project: Project }) {
   const totalBlocks = project.screens.reduce((a, s) => a + (s.blocks?.match(/<\/block>/g) || []).length, 0)
   const blocksPerScreen = project.screens.map(s => ({
     name: s.name,

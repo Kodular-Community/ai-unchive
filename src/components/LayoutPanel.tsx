@@ -1,4 +1,4 @@
-import {AIComponent} from "aia-kit/dist/ai_component";
+import {Component} from "aia-kit";
 import React, {useState} from "react";
 import {Divider, Flex, Group, List, ScrollArea, Select, Text} from "@mantine/core";
 import {
@@ -10,9 +10,9 @@ import {
 import {useToggle} from "@mantine/hooks";
 
 export function LayoutPanel({form, selected, setSelected}: {
-  form: AIComponent,
-  selected: AIComponent,
-  setSelected: (component: AIComponent) => void
+  form: Component,
+  selected: Component,
+  setSelected: (component: Component) => void
 }) {
   const [visibility, setVisibility] = useState<string | null>('all')
   return (
@@ -46,9 +46,9 @@ export function LayoutPanel({form, selected, setSelected}: {
 
 function TreeNode({component, selected, setSelected, visibility}
                       : {
-                      component: AIComponent,
-                      selected: AIComponent,
-                      setSelected: (component: AIComponent) => void,
+                      component: Component,
+                      selected: Component,
+                      setSelected: (component: Component) => void,
                       visibility: string | null
                   }
 ) {

@@ -1,26 +1,25 @@
 import {Center, Loader, Tabs} from '@mantine/core';
-import React from "react";
 import {useQuery} from "@tanstack/react-query";
 import {AIAReader} from "aia-kit";
 import {IconDeviceMobile, IconIcons, IconPuzzle} from "@tabler/icons-react";
-import {ScreenTab} from "./components/ScreenTab";
-import {ExtensionsTab} from "./components/ExtensionsTab";
-import {AssetsTab} from "./components/AssetsTab";
-import {OverviewTab} from "./components/OverviewTab";
+import {ScreenTab} from "./components/ScreenTab.js";
+import {ExtensionsTab} from "./components/ExtensionsTab.js";
+import {AssetsTab} from "./components/AssetsTab.js";
+import {OverviewTab} from "./components/OverviewTab.js";
 
 export function Explorer({file}: { file: File }) {
 
-    const {isLoading, isError, data: project} = useQuery({
+    const {status, data: project, error} = useQuery({
         queryKey: ['aia'],
-        queryFn: () => AIAReader.read(file)
+        queryFn: () => AIAReader.parse(file)
     })
 
-    if (isError) {
-        return <p>error</p>
+    if (status === 'pending') {
+        return <Center h="calc(100dvh - var(--app-shell-header-height))"><Loader/></Center>
     }
 
-    if (isLoading) {
-        return <Center h="calc(100dvh - var(--app-shell-header-height))"><Loader/></Center>
+    if (status === 'error') {
+        return <pre>{JSON.stringify(error, null, 2)}</pre>
     }
 
     return (

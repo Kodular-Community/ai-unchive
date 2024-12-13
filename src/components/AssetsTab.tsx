@@ -1,9 +1,8 @@
-import {AIAsset} from "aia-kit/dist/ai_asset";
+import {Asset} from "aia-kit";
 import prettyBytes from "pretty-bytes";
 import {Anchor, Center, Divider, ScrollArea, Table} from "@mantine/core";
-import React from "react";
 
-export function AssetsTab({assets}: { assets: AIAsset[] }) {
+export function AssetsTab({assets}: { assets: Asset[] }) {
   if (assets.length === 0) {
     return <Center h='calc(100dvh - var(--app-shell-header-height) - 41px)'>nothing in here...</Center>
   }

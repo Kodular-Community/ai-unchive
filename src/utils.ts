@@ -1,6 +1,6 @@
-import {AIProject} from "aia-kit/dist/ai_project";
+import {Project} from "aia-kit";
 
-export function getPackageName(project: AIProject) {
+export function getPackageName(project: Project) {
     let mainClass = project.properties.main;
     return mainClass.split('.').slice(0, -1).join('.');
 }

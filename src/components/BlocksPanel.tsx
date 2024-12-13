@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Group, ScrollArea, Switch, Text} from "@mantine/core";
-import BlocklyComponent from "./BlocklyComponent";
+import BlocklyComponent from "./BlocklyComponent.js";
 
 export function BlocksPanel({blocksXml}: { blocksXml: string }) {
   const [renderBlocks, setRenderBlocks] = useState(false)

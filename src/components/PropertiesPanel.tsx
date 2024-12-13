@@ -1,10 +1,9 @@
-import {AIComponent} from "aia-kit/dist/ai_component";
+import {Component} from "aia-kit";
 import {Badge, Checkbox, ColorInput, Divider, Group, NumberInput, ScrollArea, Stack, TextInput} from "@mantine/core";
-import React from "react";
-import {parseAiBoolean, parseAiColor,} from "aia-kit/dist/utils/utils";
-import {ComponentPropertyEditor} from "aia-kit/dist/types";
+import {parseAiBoolean, parseAiColor,} from "aia-kit/utils/utils.js";
+import {ComponentPropertyEditor} from "aia-kit/types.js";
 
-export function PropertiesPanel({component}: { component: AIComponent }) {
+export function PropertiesPanel({component}: { component: Component }) {
   return (
     <div>
       <Group justify="apart" gap='xs' style={{padding: '8px 4px'}}>

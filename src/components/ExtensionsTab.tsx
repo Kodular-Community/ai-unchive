@@ -1,8 +1,7 @@
-import {AIExtension} from "aia-kit/dist/ai_extension";
+import {Extension} from "aia-kit";
 import {Center, ScrollArea, Table} from "@mantine/core";
-import React from "react";
 
-export function ExtensionsTab({exts}: { exts: AIExtension[] }) {
+export function ExtensionsTab({exts}: { exts: Extension[] }) {
   if (exts.length === 0) {
     return <Center h='calc(100dvh - var(--app-shell-header-height) - 41px)'>nothing in here...</Center>
   }

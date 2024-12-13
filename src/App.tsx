@@ -10,8 +10,8 @@ import {
   Select,
   Text
 } from '@mantine/core'
-import {Explorer} from './Explorer'
-import React, {useState} from "react";
+import {Explorer} from './Explorer.js'
+import {useState} from "react";
 import {IconBrandGithub} from "@tabler/icons-react";
 
 function App() {
