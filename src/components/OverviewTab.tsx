@@ -1,78 +1,57 @@
-import {Project} from "aia-kit";
+import { Project } from "aia-kit";
 import {
   Avatar,
-  Badge,
   ColorInput,
   Checkbox,
   NumberInput,
   Divider,
   Grid,
   Group,
-  RingProgress,
   ScrollArea,
   Stack,
   Text,
   TextInput
 } from "@mantine/core";
-import {getPackageName} from "../utils.js";
-import {parseAiBoolean, parseAiColor} from "aia-kit/utils/utils.js";
+import { getPackageName } from "../utils.js";
+import { parseAiBoolean, parseAiColor } from "aia-kit/utils/utils.js";
+import { DonutChart } from "@mantine/charts";
 
 const COLORS = ['#3366cc', '#dc3912', '#ff9900', '#109618', '#5e35b1'];
 
-function RenderPieChart({data, title}: { data: { name: string, value: number }[], title: string }) {
+function RenderPieChart({ data, title }: { data: { name: string, value: number }[], title: string }) {
   const sections = data.map((d, i) => ({
     value: d.value * 100,
     color: COLORS[i % COLORS.length],
-    tooltip: `${d.name}: ${(d.value * 100).toFixed(1)}%`,
-    children: 123
+    name: d.name
   }));
 
   return (
-    <Group>
-      <RingProgress
-        size={300}
-        thickness={40}
-        label={
-          <Text size="xs" ta="center">
-            {title}
-          </Text>
-        }
-        sections={sections}
-      />
-      <Stack>
-        {data.map((d, i) => (
-          <Group justify="apart" key={i}>
-            <Badge variant="dot" color={COLORS[i % COLORS.length]} style={{textTransform: 'none'}}>{d.name}</Badge>
-            <Text>{(d.value * 100).toFixed(1)}%</Text>
-          </Group>
-        ))}
-      </Stack>
-    </Group>
+    <DonutChart data={sections} chartLabel={title} size={240} thickness={40} withLabelsLine labelsType="percent" withLabels valueFormatter={(v) => v.toFixed(2)} />
   )
 }
 
-function ProjectPropertiesPanel({properties}: { properties: Record<string, string> }) {
-  function RenderProperty({name, value}: {name: string, value: string}) {
+function ProjectPropertiesPanel({ properties }: { properties: Record<string, string> }) {
+  function RenderProperty({ name, value }: { name: string, value: string }) {
     if (['True', 'False'].includes(value)) {
-      return <Checkbox label={name} checked={parseAiBoolean(value)} readOnly size='xs'/>
+      return <Checkbox label={name} checked={parseAiBoolean(value)} readOnly size='xs' />
     }
     if (!Number.isNaN(Number.parseFloat(value))) {
-      return <NumberInput label={name} value={parseFloat(value)} readOnly size='xs'/>
+      return <NumberInput label={name} value={parseFloat(value)} readOnly size='xs' />
     }
     if (value.startsWith('&H')) {
-      return <ColorInput label={name} value={parseAiColor(value)} readOnly size='xs'/>
+      return <ColorInput label={name} value={parseAiColor(value)} readOnly size='xs' />
     }
-    return <TextInput label={name} value={value} readOnly size='xs'/>
+    return <TextInput label={name} value={value} readOnly size='xs' />
   }
 
   return (
     <div>
-      <Group justify="apart" style={{padding: '8px 4px'}}>
+      <Group justify="apart" style={{ padding: '8px 4px' }}>
         <div>Project Properties</div>
       </Group>
-      <Divider/>
+      <Divider />
       <ScrollArea offsetScrollbars scrollbarSize={6} scrollHideDelay={300}
-                  styles={{viewport: {height: "calc(100dvh - var(--app-shell-header-height) - 82px)"}}}>
+        styles={{ viewport: { height: "calc(100dvh - var(--app-shell-header-height) - 82px)" } }}>
         <Stack gap='xs'>
           {
             Object.entries(properties).map(([name, value], i) => (
@@ -85,7 +64,7 @@ function ProjectPropertiesPanel({properties}: { properties: Record<string, strin
   );
 }
 
-export function OverviewTab({project}: { project: Project }) {
+export function OverviewTab({ project }: { project: Project }) {
   const totalBlocks = project.screens.reduce((a, s) => a + (s.blocks?.match(/<\/block>/g) || []).length, 0)
   const blocksPerScreen = project.screens.map(s => ({
     name: s.name,
@@ -108,17 +87,17 @@ export function OverviewTab({project}: { project: Project }) {
   return (
     <Grid>
       <Grid.Col span={3}>
-        <Avatar radius="md" size="xl" color="dark" src="/logo.png"/>
+        <Avatar radius="md" size="xl" color="dark" src="/logo.png" />
         <Text>Package Name = {getPackageName(project)}</Text>
       </Grid.Col>
       <Grid.Col span={3}>
-        <ProjectPropertiesPanel properties={project.properties}/>
+        <ProjectPropertiesPanel properties={project.properties} />
       </Grid.Col>
       <Grid.Col span={6}>
         <ScrollArea offsetScrollbars scrollbarSize={6} scrollHideDelay={300}
-                    styles={{viewport: {height: "calc(100dvh - var(--app-shell-header-height) - 41px)"}}}>
-          <RenderPieChart data={blocksPerScreen} title="Blocks per screen"/>
-          <RenderPieChart data={assetsPerType} title="Assets per type"/>
+          styles={{ viewport: { height: "calc(100dvh - var(--app-shell-header-height) - 41px)" } }}>
+          <RenderPieChart data={blocksPerScreen} title="Blocks per screen" />
+          <RenderPieChart data={assetsPerType} title="Assets per type" />
         </ScrollArea>
       </Grid.Col>
     </Grid>

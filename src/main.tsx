@@ -2,10 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {MantineProvider, createTheme} from "@mantine/core";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import App from './App'
+import App from './App.js'
 
 // core styles are required for all packages
 import '@mantine/core/styles.css';
+import '@mantine/charts/styles.css';
 
 import './main.css'
 
