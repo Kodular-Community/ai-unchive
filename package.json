@@ -25,8 +25,8 @@
     "vite": "^6.0.3"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
     "@mantine/charts": "^7.15.1",
+    "@mantine/code-highlight": "^7.15.1",
     "@mantine/core": "^7.15.1",
     "@mantine/hooks": "^7.15.1",
     "@tabler/icons-react": "^3.24.0",

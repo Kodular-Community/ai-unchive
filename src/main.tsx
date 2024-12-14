@@ -1,27 +1,28 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import {MantineProvider, createTheme} from "@mantine/core";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import App from './App.js'
+import { MantineProvider, createTheme } from "@mantine/core";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.js";
 
 // core styles are required for all packages
-import '@mantine/core/styles.css';
-import '@mantine/charts/styles.css';
+import "@mantine/core/styles.css";
+import "@mantine/charts/styles.css";
+import "@mantine/code-highlight/styles.css";
 
-import './main.css'
+import "./main.css";
 
 const theme = createTheme({
-  primaryColor: "violet"
+	primaryColor: "violet",
 });
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <MantineProvider theme={theme} defaultColorScheme="auto">
-      <QueryClientProvider client={queryClient}>
-        <App/>
-      </QueryClientProvider>
-    </MantineProvider>
-  </React.StrictMode>
-)
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+	<React.StrictMode>
+		<MantineProvider theme={theme} defaultColorScheme="auto">
+			<QueryClientProvider client={queryClient}>
+				<App />
+			</QueryClientProvider>
+		</MantineProvider>
+	</React.StrictMode>,
+);

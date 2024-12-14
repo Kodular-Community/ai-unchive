@@ -11,7 +11,9 @@ function BlocklyComponent({ blocksXml }: { blocksXml: string }) {
 	const project = useProject();
 	const wsRef = useRef<typeof BlocklyWorkspace | null>(null);
 
-	const blocklyDivRef = useCallback((blocklyDiv: HTMLDivElement) => {
+	const blocklyDivRef = useCallback((blocklyDiv: HTMLDivElement | null) => {
+		if (!blocklyDiv) return;
+		
 		if (!wsRef.current) {
 			const ws = Blockly.inject(blocklyDiv, {
 				readOnly: true,
