@@ -52,20 +52,10 @@ function TitleBar() {
     <Group h='100%' px='md' justify="space-between" style={{flex: 1}}>
       <UnchiveLogo/>
       <Group>
-        <Select
-          size="xs"
-          placeholder="Language"
-          defaultValue="en"
-          data={[
-            {value: 'en', label: 'English'},
-            {value: 'de', label: 'German'},
-            {value: 'es', label: 'Spanish'},
-          ]}
-        />
         <ActionIcon
           variant='default'
           component="a"
-          href="https://mantine.dev"
+          href="https://github.com/Kodular/ai-unchive"
           target="_blank"
           aria-label="Open in a new tab"
         >
