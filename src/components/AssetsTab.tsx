@@ -1,4 +1,4 @@
-import {Asset} from "aia-kit";
+import type {Asset} from "aia-kit";
 import prettyBytes from "pretty-bytes";
 import {Anchor, Center, Divider, ScrollArea, Table} from "@mantine/core";
 

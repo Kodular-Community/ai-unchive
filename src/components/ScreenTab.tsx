@@ -1,4 +1,4 @@
-import {Screen} from "aia-kit";
+import type {Screen} from "aia-kit";
 import {useState} from "react";
 import {Container, Grid} from "@mantine/core";
 import {LayoutPanel} from "./LayoutPanel.js";

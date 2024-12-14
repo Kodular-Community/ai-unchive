@@ -1,4 +1,4 @@
-import {Extension} from "aia-kit";
+import type {Extension} from "aia-kit";
 import {Center, ScrollArea, Table} from "@mantine/core";
 
 export function ExtensionsTab({exts}: { exts: Extension[] }) {

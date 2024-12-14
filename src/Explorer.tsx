@@ -25,7 +25,7 @@ export function Explorer({ file }: { file: File }) {
 
   return (
     <ProjectContext value={project}>
-      <Tabs defaultValue="overview" keepMounted>
+      <Tabs defaultValue="overview" keepMounted={false}>
         <Tabs.List>
           <Tabs.Tab value="overview"><b>{project.name}</b></Tabs.Tab>
           <Tabs.Tab value="assets"

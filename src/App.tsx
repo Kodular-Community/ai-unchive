@@ -7,7 +7,6 @@ import {
   Center,
   FileButton,
   Group,
-  Select,
   Text
 } from '@mantine/core'
 import {Explorer} from './Explorer.js'

@@ -1,5 +1,6 @@
-import {Component} from "aia-kit";
-import React, {useState} from "react";
+import type {Component} from "aia-kit";
+import type React from "react";
+import {useState} from "react";
 import {Divider, Flex, Group, List, ScrollArea, Select, Text} from "@mantine/core";
 import {
   IconBox,
@@ -96,8 +97,8 @@ function TreeNode({component, selected, setSelected, visibility}
             </div>
             <List listStyleType="none" w='100%' withPadding pl='1.5rem' style={{borderLeft: "2px solid #8888"}}>
                 {
-                    !collapsed && component.children?.map((child, i) => (
-                        <TreeNode component={child} key={i} selected={selected} setSelected={setSelected}
+                    !collapsed && component.children?.map((child) => (
+                        <TreeNode component={child} key={child.name} selected={selected} setSelected={setSelected}
                                   visibility={visibility}/>
                     ))
                 }
